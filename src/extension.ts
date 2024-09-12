@@ -1,10 +1,7 @@
 import * as vscode from 'vscode';
-
-export function activate(context: vscode.ExtensionContext) {
-    let disposable = vscode.commands.registerCommand('simple-vue-template.generateVueTemplate', () => {
-        const editor = vscode.window.activeTextEditor;
-        if (editor) {
-            const template = `
+import * as fs from 'fs';
+import * as path from 'path';
+const TEMPLATE =`
 <template>
   <div class="">
 
@@ -32,52 +29,56 @@ export function activate(context: vscode.ExtensionContext) {
     }
   }
 </script>
+
+<style lang="scss" scoped>
+
+</style>
 `
+export function activate(context: vscode.ExtensionContext) {
+    let disposable = vscode.commands.registerCommand('simple-vue-template.generateVueTemplate', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            const template = TEMPLATE;
             editor.edit(editBuilder => {
               editBuilder.insert(editor.selection.active, template);
             });
         }
     });
 
-		disposable = vscode.commands.registerCommand('simple-vue-template.generateVueTemplateSimple', () => {
-			const editor = vscode.window.activeTextEditor;
-			if (editor) {
-					const template = `
-<template>
-<div class="">
+		let createVueFile = vscode.commands.registerCommand('simple-vue-template.createVueTemplateFile', async (uri: vscode.Uri) => {
+			const folderPath = uri.fsPath;
+			console.log('folderPath', folderPath)
+			const fileName = await vscode.window.showInputBox({
+				prompt: 'Enter the name for the new Vue file',
+				placeHolder: 'Component',
+				validateInput: input => {
+						if (!input.length) {
+								return 'Enter file name';
+						}
+						return null;
+				}
+			});
 
-</div>
-</template>
+			if (fileName) {
+				const fName = fileName.endsWith('.vue') ? fileName : fileName + '.vue'
+				const filePath = path.join(folderPath, fName);
 
-<script>
-import { reactive } from 'vue'
-export default {
-	props: {
+				const template = TEMPLATE;
 
-	},
-	emits: [],
-	setup(props, { emit }) {
-		// Variables
-		props = reactive(props)
-
-		// Computed
-
-		// Methods
-
-		return {
-
-		}
-	}
-}
-</script>
-`
-					editor.edit(editBuilder => {
-						editBuilder.insert(editor.selection.active, template);
-					});
+				fs.writeFile(filePath, template, (err) => {
+						if (err) {
+								vscode.window.showErrorMessage('Failed to create file');
+								return;
+						}
+						vscode.window.showInformationMessage('Vue file created successfully');
+						vscode.workspace.openTextDocument(filePath).then(doc => {
+								vscode.window.showTextDocument(doc);
+						});
+				});
 			}
 	});
 
-  context.subscriptions.push(disposable);
+  context.subscriptions.push(disposable, createVueFile);
 }
 
 export function deactivate() {}

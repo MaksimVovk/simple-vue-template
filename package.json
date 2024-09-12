@@ -15,13 +15,21 @@
     "commands": [
       {
         "command": "simple-vue-template.generateVueTemplate",
-        "title": "generate vue template"
+        "title": "Generate Vue Template"
       },
       {
-        "command": "simple-vue-template.generateVueTemplateSimple",
-        "title": "Generate Simple Vue Template"
+        "command": "simple-vue-template.createVueTemplateFile",
+        "title": "Create Vue File with Template"
       }
     ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "simple-vue-template.createVueTemplateFile",
+          "when": "explorerResourceIsFolder"
+        }
+      ]
+    },
     "keybindings": [
       {
         "command": "simple-vue-template.generateVueTemplate",
@@ -33,21 +41,21 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "compile": "./node_modules/typescript/bin/tsc -p ./",
+    "watch": "./node_modules/typescript/bin/tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.93.0",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
+    "@types/vscode": "^1.93.0",
     "@typescript-eslint/eslint-plugin": "^8.3.0",
     "@typescript-eslint/parser": "^8.3.0",
-    "eslint": "^9.9.1",
-    "typescript": "^5.5.4",
     "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.9.1",
+    "typescript": "^5.6.2"
   }
 }
