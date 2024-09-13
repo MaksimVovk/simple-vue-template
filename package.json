@@ -1,8 +1,10 @@
 {
   "name": "simple-vue-template",
   "displayName": "simple-vue-template",
+  "publisher": "maximvovk",
+  "icon": "logo.png",
   "description": "create a simple vue component template",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "engines": {
     "vscode": "^1.93.0"
   },
