@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-const TEMPLATE =`
+const TEMPLATE = `
 <template>
   <div class="">
 
@@ -33,52 +33,90 @@ const TEMPLATE =`
 <style lang="scss" scoped>
 
 </style>
-`
+`;
+
+const VUE3_TEMPLATE = `
+<template>
+	<div class="">
+
+	</div>
+</template>
+
+<script setup>
+	// Props
+	const props = defineProps({
+
+	})
+
+	// Emits
+	const emit = defineEmits([])
+
+	// Variables
+
+	// Computed
+
+	// Methods
+
+</script>
+
+<style lang="scss" scoped>
+
+</style>
+`;
 export function activate(context: vscode.ExtensionContext) {
-    let disposable = vscode.commands.registerCommand('simple-vue-template.generateVueTemplate', () => {
-        const editor = vscode.window.activeTextEditor;
-        if (editor) {
-            const template = TEMPLATE;
-            editor.edit(editBuilder => {
-              editBuilder.insert(editor.selection.active, template);
-            });
-        }
-    });
-
-		let createVueFile = vscode.commands.registerCommand('simple-vue-template.createVueTemplateFile', async (uri: vscode.Uri) => {
-			const folderPath = uri.fsPath;
-			console.log('folderPath', folderPath)
-			const fileName = await vscode.window.showInputBox({
-				prompt: 'Enter the name for the new Vue file',
-				placeHolder: 'Component',
-				validateInput: input => {
-						if (!input.length) {
-								return 'Enter file name';
-						}
-						return null;
-				}
+	let disposable = vscode.commands.registerCommand('simple-vue-template.generateVueTemplate', () => {
+		const editor = vscode.window.activeTextEditor;
+		if (editor) {
+			const template = TEMPLATE;
+			editor.edit(editBuilder => {
+				editBuilder.insert(editor.selection.active, template);
 			});
-
-			if (fileName) {
-				const fName = fileName.endsWith('.vue') ? fileName : fileName + '.vue'
-				const filePath = path.join(folderPath, fName);
-
-				const template = TEMPLATE;
-
-				fs.writeFile(filePath, template, (err) => {
-						if (err) {
-								vscode.window.showErrorMessage('Failed to create file');
-								return;
-						}
-						vscode.window.showInformationMessage('Vue file created successfully');
-						vscode.workspace.openTextDocument(filePath).then(doc => {
-								vscode.window.showTextDocument(doc);
-						});
-				});
-			}
+		}
+	});
+	let disposableVue3 = vscode.commands.registerCommand('simple-vue-template.generateVue3Template', () => {
+		const editor = vscode.window.activeTextEditor;
+		if (editor) {
+			const template = VUE3_TEMPLATE;
+			editor.edit(editBuilder => {
+				editBuilder.insert(editor.selection.active, template);
+			});
+		}
 	});
 
-  context.subscriptions.push(disposable, createVueFile);
+	let createVueFile = vscode.commands.registerCommand('simple-vue-template.createVueTemplateFile', async (uri: vscode.Uri) => {
+		const folderPath = uri.fsPath;
+		console.log('folderPath', folderPath);
+		const fileName = await vscode.window.showInputBox({
+			prompt: 'Enter the name for the new Vue file',
+			placeHolder: 'Component',
+			validateInput: input => {
+				if (!input.length) {
+					return 'Enter file name';
+				}
+				return null;
+			}
+		});
+
+		if (fileName) {
+			const fName = fileName.endsWith('.vue') ? fileName : fileName + '.vue';
+			const filePath = path.join(folderPath, fName);
+
+			const template = TEMPLATE;
+
+			fs.writeFile(filePath, template, (err) => {
+				if (err) {
+					vscode.window.showErrorMessage('Failed to create file');
+					return;
+				}
+				vscode.window.showInformationMessage('Vue file created successfully');
+				vscode.workspace.openTextDocument(filePath).then(doc => {
+					vscode.window.showTextDocument(doc);
+				});
+			});
+		}
+	});
+
+	context.subscriptions.push(disposable, disposableVue3, createVueFile);
 }
 
-export function deactivate() {}
+export function deactivate() { }

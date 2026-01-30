@@ -17,11 +17,15 @@
     "commands": [
       {
         "command": "simple-vue-template.generateVueTemplate",
-        "title": "Generate Vue Template"
+        "title": "Generate Vue2 Template"
       },
       {
         "command": "simple-vue-template.createVueTemplateFile",
         "title": "Create Vue File with Template"
+      },
+      {
+        "command": "simple-vue-template.generateVue3Template",
+        "title": "Generate Vue3 Template"
       }
     ],
     "menus": {
@@ -38,6 +42,12 @@
         "key": "ctrl+shift+t",
         "when": "editorTextFocus",
         "mac": "cmd+shift+t"
+      },
+      {
+        "command": "simple-vue-template.generateVue3Template",
+        "key": "ctrl+shift+e",
+        "when": "editorTextFocus",
+        "mac": "cmd+shift+e"
       }
     ]
   },

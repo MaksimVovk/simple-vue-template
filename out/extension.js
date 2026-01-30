@@ -61,11 +61,48 @@ const TEMPLATE = `
 
 </style>
 `;
+const VUE3_TEMPLATE = `
+<template>
+	<div class="">
+
+	</div>
+</template>
+
+<script setup>
+	// Props
+	const props = defineProps({
+
+	})
+
+	// Emits
+	const emit = defineEmits([])
+
+	// Variables
+
+	// Computed
+
+	// Methods
+
+</script>
+
+<style lang="scss" scoped>
+
+</style>
+`;
 function activate(context) {
     let disposable = vscode.commands.registerCommand('simple-vue-template.generateVueTemplate', () => {
         const editor = vscode.window.activeTextEditor;
         if (editor) {
             const template = TEMPLATE;
+            editor.edit(editBuilder => {
+                editBuilder.insert(editor.selection.active, template);
+            });
+        }
+    });
+    let disposableVue3 = vscode.commands.registerCommand('simple-vue-template.generateVue3Template', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            const template = VUE3_TEMPLATE;
             editor.edit(editBuilder => {
                 editBuilder.insert(editor.selection.active, template);
             });
@@ -100,7 +137,7 @@ function activate(context) {
             });
         }
     });
-    context.subscriptions.push(disposable, createVueFile);
+    context.subscriptions.push(disposable, disposableVue3, createVueFile);
 }
 function deactivate() { }
 //# sourceMappingURL=extension.js.map
